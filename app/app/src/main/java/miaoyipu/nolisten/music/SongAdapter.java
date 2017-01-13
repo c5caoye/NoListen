@@ -55,8 +55,9 @@ public class SongAdapter extends BaseAdapter {
 
         Song currSong = songs.get(position);
 
-        //Bitmap bm = currSong.getCover();
-        //coverView.setImageBitmap(bm);
+        Bitmap bm = currSong.getCover();
+        bm = Bitmap.createScaledBitmap(bm, 300, 300, false);
+        coverView.setImageBitmap(bm);
         songView.setText(currSong.getTitle());
         artistView.setText(currSong.getArtist());
 

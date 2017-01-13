@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                     bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), artUri);
                 } catch (FileNotFoundException exception) {
                     exception.printStackTrace();
-                    bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.play);
+                    bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.icon);
                 } catch (IOException e) {e.printStackTrace();}
 
 
