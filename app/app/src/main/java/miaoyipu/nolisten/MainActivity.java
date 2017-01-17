@@ -12,11 +12,14 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.FileNotFoundException;
@@ -30,7 +33,6 @@ import miaoyipu.nolisten.music.Song;
 import miaoyipu.nolisten.music.SongAdapter;
 
 public class MainActivity extends AppCompatActivity {
-
     private ArrayList<Song> songList;
     private ListView songView;
 
@@ -134,18 +136,25 @@ public class MainActivity extends AppCompatActivity {
         if (playbackPaused) {
             playbackPaused=false;
         }
+        setSongTitleView();
     }
 
-    public void play_music(View view) {
+    public void play_pause(View view) {
         if (!is_start) {
             musicSrv.setSong(0);
             musicSrv.playSong();
-
             playbackPaused = false;
             is_start = true;
-        }else if (playbackPaused) {
+            setSongTitleView();
+            view.setBackgroundResource(R.drawable.pause);
+        } else if (playbackPaused){
             musicSrv.go();
             playbackPaused=false;
+            setSongTitleView();
+            view.setBackgroundResource(R.drawable.pause);
+        } else if (is_start && !playbackPaused) {
+            pause();
+            view.setBackgroundResource(R.drawable.play_black);
         }
     }
 
@@ -162,19 +171,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void pause_music(View view) {
-        if (is_start && !playbackPaused) {
-            pause();
-            Toast.makeText(getApplicationContext(), "music paused", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     public void play_prev(View view) {
+
         playPrev();
+        setSongTitleView();
+        Button bt = (Button) findViewById(R.id.music_play_button);
+        bt.setBackgroundResource(R.drawable.pause);
     }
 
     public void play_next(View view) {
         playNext();
+        setSongTitleView();
+        Button bt = (Button) findViewById(R.id.music_play_button);
+        bt.setBackgroundResource(R.drawable.pause);
     }
 
 
@@ -268,5 +277,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    public void setSongTitleView() {
+        TextView View = (TextView) findViewById(R.id.song_title_text);
+        View.setText(musicSrv.getSongTitle());
     }
 }

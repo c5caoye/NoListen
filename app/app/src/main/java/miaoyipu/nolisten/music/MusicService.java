@@ -33,7 +33,6 @@ public class MusicService extends Service implements
     private final IBinder musicBind = new MusicBinder();
 
     private MediaPlayer player;
-    private String mediaFile; //path to the audio file.
     private ArrayList<Song> songs;
     private int songPosn; //current position.
 
@@ -225,4 +224,6 @@ public class MusicService extends Service implements
     public void onDestroy() {
         stopForeground(true);
     }
+
+    public String getSongTitle() {return songTitle;}
 }
