@@ -1,9 +1,11 @@
 package miaoyipu.nolisten;
 
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
@@ -282,5 +284,21 @@ public class MainActivity extends AppCompatActivity {
     public void setSongTitleView() {
         TextView View = (TextView) findViewById(R.id.song_title_text);
         View.setText(musicSrv.getSongTitle());
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setMessage("Are you sure you want to exit?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        MainActivity.super.onBackPressed();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+
+
     }
 }
