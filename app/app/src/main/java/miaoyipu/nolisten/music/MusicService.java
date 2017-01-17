@@ -26,11 +26,14 @@ import miaoyipu.nolisten.R;
  */
 public class MusicService extends Service implements
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
-        MediaPlayer.OnCompletionListener {
+        MediaPlayer.OnCompletionListener, MediaPlayer.OnSeekCompleteListener,
+        MediaPlayer.OnInfoListener, MediaPlayer.OnBufferingUpdateListener,
+        AudioManager.OnAudioFocusChangeListener {
 
     private final IBinder musicBind = new MusicBinder();
 
     private MediaPlayer player;
+    private String mediaFile; //path to the audio file.
     private ArrayList<Song> songs;
     private int songPosn; //current position.
 
@@ -62,6 +65,7 @@ public class MusicService extends Service implements
     }
 
     @Override
+    /* Invoked when a playback of a media source has completed*/
     public void onCompletion(MediaPlayer mp) {
         if(player.getCurrentPosition() > 0) {
             mp.reset();
@@ -91,22 +95,52 @@ public class MusicService extends Service implements
     }
 
     @Override
+    /* Invoked when there has been an error during an asy. operation */
     public boolean onError(MediaPlayer mp, int what, int extra) {
         mp.reset();
         return false;
     }
 
     public void initMusicPlayer() {
-        player.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
-        player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
         player.setOnPreparedListener(this);
         player.setOnCompletionListener(this);
         player.setOnErrorListener(this);
+        player.setOnBufferingUpdateListener(this);
+        player.setOnSeekCompleteListener(this);
+        player.setOnInfoListener(this);
+
+
+        player.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+        player.setAudioStreamType(AudioManager.STREAM_MUSIC);
     }
 
     public void setList(ArrayList<Song> theSongs) {
         songs = theSongs;
+    }
+
+    @Override
+    /* Invoked when the audio focus of the system is updated */
+    public void onAudioFocusChange(int focusChange) {
+
+    }
+
+    @Override
+    /* Invoked indicating buffering status of a media
+        resource being streamed over the network
+     */
+    public void onBufferingUpdate(MediaPlayer mp, int percent) {
+
+    }
+
+    @Override
+    public boolean onInfo(MediaPlayer mp, int what, int extra) {
+        return false;
+    }
+
+    @Override
+    /*Invoked indicating the completion of a seek operation */
+    public void onSeekComplete(MediaPlayer mp) {
+
     }
 
     public class MusicBinder extends Binder {

@@ -17,7 +17,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.MediaController;
+import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -29,7 +29,7 @@ import miaoyipu.nolisten.music.MusicService;
 import miaoyipu.nolisten.music.Song;
 import miaoyipu.nolisten.music.SongAdapter;
 
-public class MainActivity extends AppCompatActivity implements MediaController.MediaPlayerControl {
+public class MainActivity extends AppCompatActivity {
 
     private ArrayList<Song> songList;
     private ListView songView;
@@ -38,9 +38,10 @@ public class MainActivity extends AppCompatActivity implements MediaController.M
     private Intent playIntent;
     private boolean musicBound = false;
 
-    private MusicController controller;
-
     private boolean paused = false, playbackPaused = false;
+
+    private boolean is_start = false;
+    private boolean shuffle = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +62,6 @@ public class MainActivity extends AppCompatActivity implements MediaController.M
 
         SongAdapter songAda = new SongAdapter(this, songList);
         songView.setAdapter(songAda);
-
-        setController();
     }
 
     @Override
@@ -133,49 +132,68 @@ public class MainActivity extends AppCompatActivity implements MediaController.M
         musicSrv.setSong(Integer.parseInt(view.getTag().toString()));
         musicSrv.playSong();
         if (playbackPaused) {
-            //setController();
             playbackPaused=false;
         }
-        controller.show();
     }
 
-    private void setController() {
-        controller = new MusicController(this);
+    public void play_music(View view) {
+        if (!is_start) {
+            musicSrv.setSong(0);
+            musicSrv.playSong();
 
-        controller.setPrevNextListeners(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playNext();
-            }
-        }, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                playPrev();
-            }
-        });
-
-        controller.setMediaPlayer(this);
-        controller.setAnchorView(findViewById(R.id.song_list));
-        controller.setEnabled(true);
+            playbackPaused = false;
+            is_start = true;
+        }else if (playbackPaused) {
+            musicSrv.go();
+            playbackPaused=false;
+        }
     }
+
+    public void shuffle(View view) {
+
+        musicSrv.setShuffle();
+        if (!shuffle) {
+            shuffle = true;
+            Toast.makeText(getApplicationContext(), "shuffle on", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            shuffle = false;
+            Toast.makeText(getApplicationContext(), "shuffle off", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void pause_music(View view) {
+        if (is_start && !playbackPaused) {
+            pause();
+            Toast.makeText(getApplicationContext(), "music paused", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void play_prev(View view) {
+        playPrev();
+    }
+
+    public void play_next(View view) {
+        playNext();
+    }
+
+
 
     private void playNext() {
         musicSrv.playNext();
         if (playbackPaused) {
-            //setController();
             playbackPaused=false;
         }
-        controller.show();
     }
 
     private void playPrev() {
         musicSrv.playPrev();
         if (playbackPaused) {
-            //setController();
             playbackPaused=false;
         }
-        controller.show();
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -199,28 +217,16 @@ public class MainActivity extends AppCompatActivity implements MediaController.M
         super.onDestroy();
     }
 
-    @Override
     public void start() {
         musicSrv.go();
         playbackPaused = false;
-//        if (playbackPaused) {
-//            setController();
-//            playbackPaused=false;
-//        }
-//        controller.show(0);
-//        //musicSrv.go();
-
     }
 
-    @Override
     public void pause() {
-        //playbackPaused=true;
         musicSrv.pausePlayer();
         playbackPaused=true;
-        //controller.show(0);
     }
 
-    @Override
     public int getDuration() {
         if (musicSrv!= null && musicBound && musicSrv.isPng()) {
             return musicSrv.getDur();
@@ -228,7 +234,6 @@ public class MainActivity extends AppCompatActivity implements MediaController.M
         else return 0;
     }
 
-    @Override
     public int getCurrentPosition() {
         if(musicSrv!=null && musicBound && musicSrv.isPng()) {
             return musicSrv.getPosn();
@@ -236,41 +241,14 @@ public class MainActivity extends AppCompatActivity implements MediaController.M
         else return 0;
     }
 
-    @Override
     public void seekTo(int pos) {
         musicSrv.seek(pos);
     }
 
-    @Override
     public boolean isPlaying() {
         if (musicSrv!=null && musicBound) {
             return musicSrv.isPng();
         } else return false;
-    }
-
-    @Override
-    public int getBufferPercentage() {
-        return 0;
-    }
-
-    @Override
-    public boolean canPause() {
-        return true;
-    }
-
-    @Override
-    public boolean canSeekBackward() {
-        return true;
-    }
-
-    @Override
-    public boolean canSeekForward() {
-        return true;
-    }
-
-    @Override
-    public int getAudioSessionId() {
-        return 0;
     }
 
     @Override
@@ -283,14 +261,12 @@ public class MainActivity extends AppCompatActivity implements MediaController.M
     protected void onResume() {
         super.onResume();
         if (paused) {
-            //setController();
             paused = false;
         }
     }
 
     @Override
     protected void onStop() {
-        controller.hide();
         super.onStop();
     }
 }

@@ -9,7 +9,69 @@
     <ListView
         android:id="@+id/song_list"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="452dp" >
     </ListView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:background="?android:attr/colorBackground"
+        android:backgroundTint="?attr/colorPrimary">
+
+        <Button
+            android:layout_height="20dp"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/music_prev_button"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            style="@style/Widget.AppCompat.Button.Small"
+            android:background="@drawable/prev"
+            android:layout_width="30dp"
+            android:onClick="play_prev" />
+
+
+        <Button
+            android:layout_height="20dp"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/music_play_button"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            style="@style/Widget.AppCompat.Button.Small"
+            android:background="@drawable/play_black"
+            android:onClick="play_music"
+            android:layout_width="30dp" />
+
+        <Button
+            android:layout_height="20dp"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/music_pause_button"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            style="@style/Widget.AppCompat.Button.Small"
+            android:background="@drawable/pause"
+            android:layout_width="30dp"
+            android:onClick="pause_music" />
+
+        <Button
+            android:layout_height="20dp"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/music_next_button"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            style="@style/Widget.AppCompat.Button.Small"
+            android:background="@drawable/next"
+            android:layout_width="30dp"
+            android:onClick="play_next" />
+
+        <Button
+            android:layout_marginLeft="20dp"
+            android:id="@+id/music_shuffle_button"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            style="@style/Widget.AppCompat.Button.Small"
+            android:background="@drawable/rand_black"
+            android:layout_width="20dp"
+            android:layout_height="30dp"
+            android:onClick="shuffle" />
+    </LinearLayout>
+
 
 </LinearLayout>
