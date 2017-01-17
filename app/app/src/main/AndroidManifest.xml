@@ -28,7 +28,7 @@
 
         <service android:name=".music.MusicService" />
 
-        <activity android:name=".FullscreenActivity"></activity>
+        <activity android:name=".FullscreenActivity" />
     </application>
 
 </manifest>

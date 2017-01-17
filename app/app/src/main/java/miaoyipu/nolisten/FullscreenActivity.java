@@ -87,7 +87,9 @@ public class FullscreenActivity extends AppCompatActivity {
         ImageView view = (ImageView) findViewById(R.id.imageView);
         int posn = musicSrv.getSongPosn();
         Song currSong = musicSrv.getSongs().get(posn);
-        view.setImageBitmap(currSong.getCover());
+        Bitmap cover = currSong.getCover();
+        cover = Bitmap.createScaledBitmap(cover, 1000, 1000, false);
+        view.setImageBitmap(cover);
     }
 
 }
