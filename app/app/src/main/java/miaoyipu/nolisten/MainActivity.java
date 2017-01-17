@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Song> songList;
     private ListView songView;
 
-    private MusicService musicSrv;
+    public static MusicService musicSrv;
     private Intent playIntent;
     private boolean musicBound = false;
 
@@ -75,6 +75,25 @@ public class MainActivity extends AppCompatActivity {
             playIntent = new Intent(this, MusicService.class);
             bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
             startService(playIntent);
+        }
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Button play_btn = (Button) findViewById(R.id.music_play_button);
+
+        if (musicBound) {
+            if (musicSrv.isPng()) {
+                playbackPaused = false;
+                play_btn.setBackgroundResource(R.drawable.pause);
+            } else {
+                playbackPaused = true;
+                play_btn.setBackgroundResource(R.drawable.play_black);
+            }
+
+            setSongTitleView();
         }
     }
 
@@ -135,10 +154,18 @@ public class MainActivity extends AppCompatActivity {
     public void songPicked(View view) {
         musicSrv.setSong(Integer.parseInt(view.getTag().toString()));
         musicSrv.playSong();
+        is_start = true;
         if (playbackPaused) {
             playbackPaused=false;
         }
         setSongTitleView();
+
+        toFullscreen();
+    }
+
+    public void toFullscreen() {
+        Intent intent = new Intent(this, FullscreenActivity.class);
+        startActivity(intent);
     }
 
     public void play_pause(View view) {
@@ -204,8 +231,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -228,58 +253,11 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    public void start() {
-        musicSrv.go();
-        playbackPaused = false;
-    }
-
     public void pause() {
         musicSrv.pausePlayer();
         playbackPaused=true;
     }
 
-    public int getDuration() {
-        if (musicSrv!= null && musicBound && musicSrv.isPng()) {
-            return musicSrv.getDur();
-        }
-        else return 0;
-    }
-
-    public int getCurrentPosition() {
-        if(musicSrv!=null && musicBound && musicSrv.isPng()) {
-            return musicSrv.getPosn();
-        }
-        else return 0;
-    }
-
-    public void seekTo(int pos) {
-        musicSrv.seek(pos);
-    }
-
-    public boolean isPlaying() {
-        if (musicSrv!=null && musicBound) {
-            return musicSrv.isPng();
-        } else return false;
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        paused = true;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (paused) {
-            paused = false;
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
 
     public void setSongTitleView() {
         TextView View = (TextView) findViewById(R.id.song_title_text);
@@ -301,4 +279,5 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
 }

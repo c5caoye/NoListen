@@ -225,5 +225,13 @@ public class MusicService extends Service implements
         stopForeground(true);
     }
 
+    public int getSongPosn() {
+        return songPosn;
+    }
+
+    public ArrayList<Song> getSongs() {
+        return songs;
+    }
+
     public String getSongTitle() {return songTitle;}
 }
