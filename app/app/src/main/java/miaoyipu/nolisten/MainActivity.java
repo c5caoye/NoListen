@@ -1,5 +1,6 @@
 package miaoyipu.nolisten;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -14,10 +15,14 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.support.v4.view.GestureDetectorCompat;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.GestureDetector;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -34,7 +39,7 @@ import miaoyipu.nolisten.music.MusicService;
 import miaoyipu.nolisten.music.Song;
 import miaoyipu.nolisten.music.SongAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
     private ArrayList<Song> songList;
     private ListView songView;
 
@@ -66,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
 
         SongAdapter songAda = new SongAdapter(this, songList);
         songView.setAdapter(songAda);
+
+        controllerSetGesture();
     }
 
     @Override
@@ -111,6 +118,23 @@ public class MainActivity extends AppCompatActivity {
             musicBound = false;
         }
     };
+
+    private void controllerSetGesture() {
+        View controllerView = findViewById(R.id.music_controller);
+        controllerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                int action = MotionEventCompat.getActionMasked(event);
+
+                switch(action) {
+                    case (MotionEvent.ACTION_UP):
+                        backToFullScreen();
+                        return true;
+                }
+                return true;
+            }
+        });
+    }
 
     public void getSongList() {
         ContentResolver musicResolver = getContentResolver();
@@ -166,6 +190,20 @@ public class MainActivity extends AppCompatActivity {
     public void toFullscreen() {
         Intent intent = new Intent(this, FullscreenActivity.class);
         startActivity(intent);
+    }
+
+    public void backToFullScreen(View view) {
+        backToFullScreen();
+    }
+
+    public void backToFullScreen() {
+        if (!is_start) {
+            musicSrv.setSong(0);
+            is_start = true;
+            setSongTitleView();
+        }
+
+        toFullscreen();
     }
 
     public void play_pause(View view) {

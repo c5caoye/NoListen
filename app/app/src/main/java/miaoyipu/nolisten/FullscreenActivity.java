@@ -30,6 +30,17 @@ public class FullscreenActivity extends AppCompatActivity {
         super.onStart();
         setSongTitleView();
         setImageView();
+        setPlayButton();
+    }
+
+    private void setPlayButton() {
+        if (musicSrv.isPng()) {
+            playbackPaused = false;
+        } else {
+            playbackPaused = true;
+            View play_btn = findViewById(R.id.music_play_button);
+            play_btn.setBackgroundResource(R.drawable.play_black);
+        }
     }
 
     public void play_pause(View view) {
