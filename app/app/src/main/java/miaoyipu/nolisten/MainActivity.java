@@ -15,13 +15,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.IBinder;
 import android.provider.MediaStore;
-import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.GestureDetector;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -183,14 +178,8 @@ public class MainActivity extends Activity {
             playbackPaused=false;
         }
         setSongTitleView();
-
-        toFullscreen();
     }
 
-    public void toFullscreen() {
-        Intent intent = new Intent(this, FullscreenActivity.class);
-        startActivity(intent);
-    }
 
     public void backToFullScreen(View view) {
         backToFullScreen();
@@ -203,8 +192,10 @@ public class MainActivity extends Activity {
             setSongTitleView();
         }
 
-        toFullscreen();
+        Intent intent = new Intent(this, FullscreenActivity.class);
+        startActivity(intent);
     }
+
 
     public void play_pause(View view) {
         if (!is_start) {
@@ -220,13 +211,14 @@ public class MainActivity extends Activity {
             setSongTitleView();
             view.setBackgroundResource(R.drawable.pause);
         } else if (is_start && !playbackPaused) {
-            pause();
+            musicSrv.pausePlayer();
+            playbackPaused=true;
             view.setBackgroundResource(R.drawable.play_black);
         }
     }
 
-    public void shuffle(View view) {
 
+    public void shuffle(View view) {
         musicSrv.setShuffle();
         if (!shuffle) {
             shuffle = true;
@@ -239,61 +231,19 @@ public class MainActivity extends Activity {
     }
 
     public void play_prev(View view) {
-
-        playPrev();
+        musicSrv.playPrev();
+        if (playbackPaused) playbackPaused = false;
         setSongTitleView();
         Button bt = (Button) findViewById(R.id.music_play_button);
         bt.setBackgroundResource(R.drawable.pause);
     }
 
     public void play_next(View view) {
-        playNext();
+        musicSrv.playNext();
+        if (playbackPaused) playbackPaused = false;
         setSongTitleView();
         Button bt = (Button) findViewById(R.id.music_play_button);
         bt.setBackgroundResource(R.drawable.pause);
-    }
-
-
-
-    private void playNext() {
-        musicSrv.playNext();
-        if (playbackPaused) {
-            playbackPaused=false;
-        }
-    }
-
-    private void playPrev() {
-        musicSrv.playPrev();
-        if (playbackPaused) {
-            playbackPaused=false;
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_shuffle:
-                musicSrv.setShuffle();
-                break;
-            case R.id.action_end:
-                stopService(playIntent);
-                musicSrv=null;
-                System.exit(0);
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onDestroy() {
-        stopService(playIntent);
-        musicSrv=null;
-        super.onDestroy();
-    }
-
-    public void pause() {
-        musicSrv.pausePlayer();
-        playbackPaused=true;
     }
 
 
@@ -301,6 +251,7 @@ public class MainActivity extends Activity {
         TextView View = (TextView) findViewById(R.id.song_title_text);
         View.setText(musicSrv.getSongTitle());
     }
+
 
     @Override
     public void onBackPressed() {
@@ -314,8 +265,14 @@ public class MainActivity extends Activity {
                 })
                 .setNegativeButton("No", null)
                 .show();
+    }
 
 
+    @Override
+    protected void onDestroy() {
+        stopService(playIntent);
+        musicSrv=null;
+        super.onDestroy();
     }
 
 }
