@@ -12,9 +12,11 @@ import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.IBinder;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.v4.view.MotionEventCompat;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -78,6 +80,9 @@ public class MainActivity extends Activity {
             bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
             startService(playIntent);
         }
+
+
+
     }
 
 
@@ -96,7 +101,19 @@ public class MainActivity extends Activity {
             }
 
             setSongTitleView();
+
+            musicSrv.getMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    mp.reset();
+                    musicSrv.playNext();
+                    setSongTitleView();
+                }
+            });
+
         }
+
+
     }
 
     private ServiceConnection musicConnection = new ServiceConnection() {
@@ -106,6 +123,15 @@ public class MainActivity extends Activity {
             musicSrv = binder.getService();
             musicSrv.setList(songList);
             musicBound = true;
+
+            musicSrv.getMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    mp.reset();
+                    musicSrv.playNext();
+                    setSongTitleView();
+                }
+            });
         }
 
         @Override
@@ -179,7 +205,6 @@ public class MainActivity extends Activity {
         }
         setSongTitleView();
     }
-
 
     public void backToFullScreen(View view) {
         backToFullScreen();

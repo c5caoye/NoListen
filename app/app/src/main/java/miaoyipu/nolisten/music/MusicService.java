@@ -234,4 +234,8 @@ public class MusicService extends Service implements
     }
 
     public String getSongTitle() {return songTitle;}
+
+    public MediaPlayer getMediaPlayer() {
+        return player;
+    }
 }

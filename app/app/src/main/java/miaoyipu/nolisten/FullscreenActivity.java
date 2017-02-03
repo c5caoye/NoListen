@@ -1,6 +1,7 @@
 package miaoyipu.nolisten;
 
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -23,6 +24,7 @@ public class FullscreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fullscreen);
 
         musicSrv = MainActivity.musicSrv;
+
     }
 
     @Override
@@ -31,6 +33,16 @@ public class FullscreenActivity extends AppCompatActivity {
         setSongTitleView();
         setImageView();
         setPlayButton();
+
+        musicSrv.getMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                mp.reset();
+                musicSrv.playNext();
+                setSongTitleView();
+                setImageView();
+            }
+        });
     }
 
     private void setPlayButton() {
