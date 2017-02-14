@@ -2,11 +2,13 @@ package miaoyipu.nolisten;
 
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,9 +16,12 @@ import miaoyipu.nolisten.music.MusicService;
 import miaoyipu.nolisten.music.Song;
 
 public class FullscreenActivity extends AppCompatActivity {
+    // We need a Runnable to update the bar regularly.
     private MusicService musicSrv;
     private boolean playbackPaused = false;
     private boolean shuffle = false;
+    private SeekBar seekBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +30,10 @@ public class FullscreenActivity extends AppCompatActivity {
 
         musicSrv = MainActivity.musicSrv;
 
+        seekBar = (SeekBar) findViewById(R.id.music_seekBar);
+
+        handleSeekBar();
+        startSeekBar();
     }
 
     @Override
@@ -44,6 +53,7 @@ public class FullscreenActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void setPlayButton() {
         if (musicSrv.isPng()) {
@@ -66,7 +76,32 @@ public class FullscreenActivity extends AppCompatActivity {
             playbackPaused = false;
             setSongTitleView();
             view.setBackgroundResource(R.drawable.pause);
+
+            /* start the seekBar */
+//            final Handler mHandler = new Handler();
+//            this.runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    seekBar.setMax((int) musicSrv.getDur());
+//                    int currentPosition = musicSrv.getPosn();
+//                    seekBar.setProgress(currentPosition);
+//                    mHandler.postDelayed(this, 1000);
+//                }
+//            });
         }
+    }
+
+    public void startSeekBar() {
+        final Handler mHandler = new Handler();
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                seekBar.setMax(musicSrv.getDur());
+                int currentPosition = musicSrv.getPosn();
+                seekBar.setProgress(currentPosition);
+                mHandler.postDelayed(this, 1000);
+            }
+        });
     }
 
     public void shuffle(View view) {
@@ -115,4 +150,21 @@ public class FullscreenActivity extends AppCompatActivity {
         view.setImageBitmap(cover);
     }
 
+    /* Set up the seekBar */
+    private void handleSeekBar() {
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (musicSrv.getMediaPlayer() != null && fromUser) {
+                    musicSrv.seek(progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+    }
 }
