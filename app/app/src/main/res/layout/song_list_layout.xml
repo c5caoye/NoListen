@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        tools:context=".MainActivity"
+        android:weightSum="1">
+
+        <ListView
+            android:id="@+id/song_list"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.1">
+        </ListView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_weight="0.9"
+            android:background="?attr/colorPrimary"
+            android:id="@+id/music_controller">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.9"
+                android:src="@drawable/up"
+                android:padding="10dp"
+                android:onClick="backToFullScreen" />
+
+            <TextView
+                android:id="@+id/song_title_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.4"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:textStyle="normal|bold"
+                android:textSize="24sp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:maxLines="1"
+
+                android:ellipsize="marquee"
+                android:hint="No Listen" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:backgroundTint="?attr/colorPrimary"
+                android:layout_height="match_parent"
+                android:layout_weight="0.8">
+
+
+                <Button
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:id="@+id/music_play_button"
+                    android:textAppearance="@style/TextAppearance.AppCompat"
+                    style="@style/Widget.AppCompat.Button.Small"
+                    android:background="@drawable/play_black"
+                    android:onClick="play_pause"
+                    android:layout_width="30dp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

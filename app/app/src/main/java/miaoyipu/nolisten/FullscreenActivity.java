@@ -28,7 +28,7 @@ public class FullscreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen);
 
-        musicSrv = MainActivity.musicSrv;
+        musicSrv = Main2Activity.musicSrv;
 
         seekBar = (SeekBar) findViewById(R.id.music_seekBar);
 
