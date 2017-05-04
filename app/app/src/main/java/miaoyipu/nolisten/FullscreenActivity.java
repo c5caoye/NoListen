@@ -27,11 +27,8 @@ public class FullscreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fullscreen);
-
         musicSrv = Main2Activity.musicSrv;
-
         seekBar = (SeekBar) findViewById(R.id.music_seekBar);
-
         handleSeekBar();
         startSeekBar();
     }
@@ -39,6 +36,7 @@ public class FullscreenActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
         setSongTitleView();
         setImageView();
         setPlayButton();

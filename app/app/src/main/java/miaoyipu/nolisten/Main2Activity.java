@@ -317,18 +317,27 @@ public class Main2Activity extends AppCompatActivity
     }
 
     public void backToFullScreen() {
-        if (!is_start) {
-            musicSrv.setSong(0);
-            is_start = true;
-            setSongTitleView();
-        }
+        if (songList.size() > 0) {
+            if (!is_start) {
+                musicSrv.setSong(0);
+                is_start = true;
+                setSongTitleView();
+            }
 
-        Intent intent = new Intent(this, FullscreenActivity.class);
-        startActivity(intent);
+            Intent intent = new Intent(this, FullscreenActivity.class);
+            startActivity(intent);
+        } else {
+            Toast.makeText(getApplicationContext(), "No song selected", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
     public void play_pause(View view) {
+        if (songList.size() == 0) {
+            Toast.makeText(getApplicationContext(), "No song selected", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (!is_start) {
             musicSrv.setSong(0);
             musicSrv.playSong();
