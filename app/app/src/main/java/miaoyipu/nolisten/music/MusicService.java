@@ -18,7 +18,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Random;
 
-import miaoyipu.nolisten.MainActivity;
+import miaoyipu.nolisten.Main2Activity;
 import miaoyipu.nolisten.R;
 
 /**
@@ -76,7 +76,7 @@ public class MusicService extends Service implements
     public void onPrepared(MediaPlayer mp) {
         mp.start();
 
-        Intent noIntent = new Intent(this, MainActivity.class);
+        Intent noIntent = new Intent(this, Main2Activity.class);
         noIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendInt = PendingIntent.getActivities(this, 0, new Intent[]{noIntent}, PendingIntent.FLAG_UPDATE_CURRENT);
 

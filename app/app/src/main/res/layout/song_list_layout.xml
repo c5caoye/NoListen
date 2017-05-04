@@ -9,7 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
-        tools:context=".MainActivity"
+        tools:context=".Main2Activity"
         android:weightSum="1">
 
         <ListView

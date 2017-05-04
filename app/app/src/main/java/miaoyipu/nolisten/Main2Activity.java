@@ -1,5 +1,6 @@
 package miaoyipu.nolisten;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -8,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +20,8 @@ import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -55,6 +59,7 @@ public class Main2Activity extends AppCompatActivity
     private boolean paused = false;
     private boolean is_start = false;
     private boolean shuffle = false;
+    private static final int PERMISSON_REQUEST_READ_STORAGE = 11;
     private ServiceConnection musicConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -86,28 +91,22 @@ public class Main2Activity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        songList = new ArrayList<Song>();
-        getSongList();
+        int readStorageCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (readStorageCheck == PackageManager.PERMISSION_DENIED) {
 
-        // Sort songs alphabetically
-        Collections.sort(songList, new Comparator<Song>() {
-            @Override
-            public int compare(Song s1, Song s2) {
-                return s1.getTitle().compareTo(s2.getTitle());
-            }
-        });
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERMISSON_REQUEST_READ_STORAGE);
 
-        SongAdapter songAdapter = new SongAdapter(this, songList);
-        songView = (ListView)findViewById(R.id.song_list);
-        songView.setAdapter(songAdapter);
+        } else {
+            setSongAdapter();
+        }
+
 
         // Define float button action
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
                 shuffle(view);
             }
         });
@@ -120,8 +119,6 @@ public class Main2Activity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-
     }
 
     @Override
@@ -187,6 +184,21 @@ public class Main2Activity extends AppCompatActivity
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSON_REQUEST_READ_STORAGE: {
+                // If request is cancelled, thre result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    setSongAdapter();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main2, menu);
@@ -231,6 +243,23 @@ public class Main2Activity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void setSongAdapter() {
+        songList = new ArrayList<Song>();
+        getSongList();
+
+        // Sort songs alphabetically
+        Collections.sort(songList, new Comparator<Song>() {
+            @Override
+            public int compare(Song o1, Song o2) {
+                return o1.getTitle().compareTo(o2.getTitle());
+            }
+        });
+
+        SongAdapter songAdapter = new SongAdapter(this, songList);
+        songView = (ListView)findViewById(R.id.song_list);
+        songView.setAdapter(songAdapter);
     }
 
 
