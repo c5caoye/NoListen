@@ -12,7 +12,6 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -22,6 +21,7 @@ import miaoyipu.nolisten.Main2Activity;
 import miaoyipu.nolisten.R;
 
 /**
+ * This is the class for mustic service, that controls music playback.
  * Created by cy804 on 2017-01-13.
  */
 public class MusicService extends Service implements
@@ -32,9 +32,9 @@ public class MusicService extends Service implements
 
     private final IBinder musicBind = new MusicBinder();
 
-    private MediaPlayer player;
+    private static MediaPlayer player;
     private ArrayList<Song> songs;
-    private int songPosn; //current position.
+    private int songPosn = 0; //current position.
 
     private String songTitle = "";
     private static final int NOTIFY_ID = 1;
@@ -43,12 +43,10 @@ public class MusicService extends Service implements
     private Random rand;
 
     public void onCreate() {
-        super.onCreate(); //create the service
-        songPosn = 0;
+        super.onCreate();
+        rand = new Random();
         player = new MediaPlayer();
         initMusicPlayer();
-
-        rand = new Random();
     }
 
     @Override
@@ -107,8 +105,6 @@ public class MusicService extends Service implements
         player.setOnBufferingUpdateListener(this);
         player.setOnSeekCompleteListener(this);
         player.setOnInfoListener(this);
-
-
         player.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
         player.setAudioStreamType(AudioManager.STREAM_MUSIC);
     }
@@ -165,6 +161,9 @@ public class MusicService extends Service implements
         }
 
         player.prepareAsync();
+
+        // Register ACTION_AUDIO_BECOMING_NOISY receiver
+
     }
 
     public void setSong(int songIndex) {

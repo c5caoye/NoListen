@@ -1,6 +1,7 @@
 package miaoyipu.nolisten;
 
 import android.graphics.Bitmap;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +32,8 @@ public class FullscreenActivity extends AppCompatActivity {
         seekBar = (SeekBar) findViewById(R.id.music_seekBar);
         handleSeekBar();
         startSeekBar();
+
+        setVolumeControlStream(AudioManager.STREAM_MUSIC); // This connects volume control to STREAM_MUSIC whenever the target activity or fragment is visible.
     }
 
     @Override
