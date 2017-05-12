@@ -20,7 +20,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -161,9 +160,11 @@ public class Main2Activity extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
-        stopService(playIntent);
-        musicSrv=null;
         super.onDestroy();
+        stopService(playIntent);
+        unbindService(musicConnection);
+        musicSrv = null;
+        musicBound = false;
     }
 
     @Override
